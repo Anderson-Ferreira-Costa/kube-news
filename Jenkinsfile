@@ -1,8 +1,7 @@
-pipeline{
-    agent{
-        label any
-    }
-    stages{
+pipeline {
+    agent any 
+    
+    stages {
         stage("Build Docker Image") {
             steps{
                 sh "echo 'Construção da Imagem'"
