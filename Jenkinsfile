@@ -5,7 +5,7 @@ pipeline {
         stage("Build Docker Image") {
             steps{
                 script {
-                    dockerapp = docker.build("andersonbatistaferreiracosta/kube-news:${env.BUILD_ID}", '-f ./src/Dockerfile ./src' )
+                    dockerapp = docker.build("andersonbatistaferreiracosta/kube-news:v1", '-f ./src/Dockerfile ./src' )
                 }
             }
         }
@@ -14,7 +14,7 @@ pipeline {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
                         dockerapp.push("latest")
-                        dockerapp.push("${env.BUILD_ID}")
+                        dockerapp.push("v1")
                     }
                 }
             }
