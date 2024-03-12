@@ -5,7 +5,7 @@ pipeline {
         stage("Build Docker Image") {
             steps{
                 script {
-                    dockerapp = docker.build("andersonbatistaferreiracosta/kube-news:v1", '-f ./src/Dockerfile ./src' )
+                    dockerapp = docker.build("andersonbatistaferreiracosta/kube-news:v${env.BUILD_ID}", '-f ./src/Dockerfile ./src' )
                 }
             }
         }
@@ -14,15 +14,21 @@ pipeline {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
                         dockerapp.push("latest")
-                        dockerapp.push("v1")
+                        dockerapp.push("v${env.BUILD_ID}")
                     }
                 }
             }
         }
         
         stage("Deploy no Kubernetes") {
+            enviroment {
+                tag_version = "${env.BUILD_ID}"
+            }
             steps{
-                sh "echo 'Deploy no Kubernetes'"
+                witchKubeConfig([credentialsId: 'kubeconfig']) {
+                    sh 'sed -i "s/{{TAG}}/$tag_version/g" ./k8s/deployment.yaml'
+                    sh 'kubectl apply -f k8s/deployment.yaml'
+                }
             }
         }
     }
