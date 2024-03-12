@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
       - name: kubenews
-        image: andersonbatistaferreiracosta/kube-news:{{TAG}}
+        image: andersonbatistaferreiracosta/kube-news:v{{TAG}}
         ports:
         - containerPort: 8080
         env:
