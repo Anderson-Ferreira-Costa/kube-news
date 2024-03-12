@@ -11,7 +11,12 @@ pipeline {
         }
         stage("Push Docker Image") {
             steps{
-                sh "echo 'Envio da Imagem'"
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                        dockerapp.push("latest")
+                        dockerapp.push("v1")
+                    }
+                }
             }
         }
         
